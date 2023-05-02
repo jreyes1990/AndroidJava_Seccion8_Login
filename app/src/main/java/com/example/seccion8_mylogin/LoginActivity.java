@@ -2,7 +2,9 @@ package com.example.seccion8_mylogin;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Patterns;
@@ -13,6 +15,7 @@ import android.widget.Switch;
 import android.widget.Toast;
 
 public class LoginActivity extends AppCompatActivity {
+  private SharedPreferences sharedPreferences;
   private EditText editTextEmail;
   private EditText editTextPassword;
   private Switch switchRemember;
@@ -22,6 +25,8 @@ public class LoginActivity extends AppCompatActivity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_login);
+
+    sharedPreferences = getSharedPreferences("Preferences", Context.MODE_PRIVATE);
 
     bindUI();
 
@@ -33,6 +38,7 @@ public class LoginActivity extends AppCompatActivity {
 
         if (login(email, password)){
           goToMain();
+          saveOnPreferences(email, password);
         }
       }
     });
@@ -69,5 +75,15 @@ public class LoginActivity extends AppCompatActivity {
     Intent intent = new Intent(this, MainActivity.class);
     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
     startActivity(intent);
+  }
+
+  private void saveOnPreferences(String email, String password){
+    if (switchRemember.isChecked()){
+      SharedPreferences.Editor editor = sharedPreferences.edit();
+      editor.putString("email", email);
+      editor.putString("pass", password);
+      //editor.commit();
+      editor.apply();
+    }
   }
 }
