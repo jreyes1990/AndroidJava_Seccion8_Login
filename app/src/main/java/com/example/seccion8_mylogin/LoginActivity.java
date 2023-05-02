@@ -26,9 +26,11 @@ public class LoginActivity extends AppCompatActivity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_login);
 
+    bindUI();
+
     sharedPreferences = getSharedPreferences("Preferences", Context.MODE_PRIVATE);
 
-    bindUI();
+    setCredentialsIfExist();
 
     buttonLogin.setOnClickListener(new View.OnClickListener() {
       @Override
@@ -49,6 +51,16 @@ public class LoginActivity extends AppCompatActivity {
     editTextPassword = (EditText) findViewById(R.id.editTextPassword);
     switchRemember = (Switch) findViewById(R.id.switchRemember);
     buttonLogin = (Button) findViewById(R.id.buttonLogin);
+  }
+
+  private void setCredentialsIfExist(){
+    String email = getUserMailPreferences();
+    String password = getUserPasswordPreferences();
+
+    if (!TextUtils.isEmpty(email) && !TextUtils.isEmpty(password)){
+      editTextEmail.setText(email);
+      editTextPassword.setText(password);
+    }
   }
 
   private boolean login(String email, String password){
@@ -85,5 +97,13 @@ public class LoginActivity extends AppCompatActivity {
       //editor.commit();
       editor.apply();
     }
+  }
+
+  private String getUserMailPreferences(){
+    return sharedPreferences.getString("email", "");
+  }
+
+  private String getUserPasswordPreferences(){
+    return sharedPreferences.getString("pass", "");
   }
 }
